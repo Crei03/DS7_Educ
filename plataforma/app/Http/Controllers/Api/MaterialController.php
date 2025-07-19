@@ -1,0 +1,82 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Domain\ContenidoDigital\Models\Material;
+use App\Domain\ContenidoDigital\Actions\CrearMaterialAction;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+
+class MaterialController extends Controller
+{
+    public function __construct(
+        private CrearMaterialAction $crearMaterialAction
+    ) {
+    }
+
+    public function index(Request $request): JsonResponse
+    {
+        $query = Material::with(['modulo.curso']);
+
+        // Filtrar por módulo si se proporciona
+        if ($request->has('modulo_id')) {
+            $query->where('modulo_id', $request->modulo_id);
+        }
+
+        // Filtrar por tipo si se proporciona
+        if ($request->has('tipo')) {
+            $query->where('tipo', $request->tipo);
+        }
+
+        $materiales = $query->orderBy('created_at', 'desc')
+            ->paginate(20);
+
+        return response()->json($materiales);
+    }
+
+    public function store(Request $request): JsonResponse
+    {
+        $datos = $request->validate([
+            'modulo_id' => 'required|exists:modulos,id',
+            'titulo' => 'required|string|max:120',
+            'tipo' => 'required|in:video,documento,enlace,presentacion,audio',
+            'url' => 'required|url|max:500',
+        ]);
+
+        try {
+            $material = $this->crearMaterialAction->execute($datos);
+            $material->load(['modulo.curso']);
+
+            return response()->json($material, 201);
+        } catch (\InvalidArgumentException $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
+        }
+    }
+
+    public function show(Material $material): JsonResponse
+    {
+        $material->load(['modulo.curso']);
+        return response()->json($material);
+    }
+
+    public function update(Request $request, Material $material): JsonResponse
+    {
+        $datos = $request->validate([
+            'titulo' => 'sometimes|required|string|max:120',
+            'tipo' => 'sometimes|required|in:video,documento,enlace,presentacion,audio',
+            'url' => 'sometimes|required|url|max:500',
+        ]);
+
+        $material->update($datos);
+        $material->load(['modulo.curso']);
+
+        return response()->json($material);
+    }
+
+    public function destroy(Material $material): JsonResponse
+    {
+        $material->delete();
+        return response()->json(['message' => 'Material eliminado correctamente']);
+    }
+}
