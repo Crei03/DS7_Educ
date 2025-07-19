@@ -1,0 +1,12 @@
+/* Tailwind v4: usar @import en vez de @tailwind */
+@import "tailwindcss/preflight";
+@import "tailwindcss/utilities";
+
+/* Variables SCSS y estilos personalizados */
+:root {
+  --color-primary: #0554f2;
+  --color-primary-dk: #0540f2;
+  --color-accent: #63a1f2;
+  --color-bg: #f2f2f2;
+  --color-text-main: #1f2937;
+}
