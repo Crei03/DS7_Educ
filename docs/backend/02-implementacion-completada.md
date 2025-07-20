@@ -120,6 +120,7 @@
 - `PUT /api/profesores/{id}` - Actualizar profesor
 - `DELETE /api/profesores/{id}` - Eliminar profesor
 - `GET /api/profesores/{id}/cursos` - Ver cursos del profesor
+- `GET /api/profesores/{id}/materiales` - Ver materiales del profesor
 
 ### Reportes y Estadísticas (Requiere autenticación) - ⚠️ PENDIENTE
 
