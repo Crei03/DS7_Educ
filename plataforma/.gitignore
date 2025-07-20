@@ -22,4 +22,6 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
-/node_modules
+
+tailwind.config.js
+vite.config.js

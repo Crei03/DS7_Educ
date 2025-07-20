@@ -38,10 +38,10 @@ class MaterialController extends Controller
     public function store(Request $request): JsonResponse
     {
         $datos = $request->validate([
-            'modulo_id' => 'required|exists:modulos,id',
+            'modulo_id' => 'nullable|exists:modulos,id',
             'titulo' => 'required|string|max:120',
-            'tipo' => 'required|in:video,documento,enlace,presentacion,audio',
-            'url' => 'required|url|max:500',
+            'tipo' => 'required|in:pdf,link,zip,video,documento,enlace,presentacion,audio',
+            'url' => 'required|string|max:500',
         ]);
 
         try {
@@ -54,18 +54,22 @@ class MaterialController extends Controller
         }
     }
 
-    public function show(Material $material): JsonResponse
+    public function show($id): JsonResponse
     {
+        $material = Material::findOrFail($id);
         $material->load(['modulo.curso']);
         return response()->json($material);
     }
 
-    public function update(Request $request, Material $material): JsonResponse
+    public function update(Request $request, $id): JsonResponse
     {
+        $material = Material::findOrFail($id);
+
         $datos = $request->validate([
             'titulo' => 'sometimes|required|string|max:120',
-            'tipo' => 'sometimes|required|in:video,documento,enlace,presentacion,audio',
-            'url' => 'sometimes|required|url|max:500',
+            'tipo' => 'sometimes|required|in:pdf,link,zip,video,documento,enlace,presentacion,audio',
+            'url' => 'sometimes|required|string|max:500',
+            'modulo_id' => 'sometimes|nullable|exists:modulos,id',
         ]);
 
         $material->update($datos);
@@ -74,9 +78,11 @@ class MaterialController extends Controller
         return response()->json($material);
     }
 
-    public function destroy(Material $material): JsonResponse
+    public function destroy($id): JsonResponse
     {
+        $material = Material::findOrFail($id);
         $material->delete();
+
         return response()->json(['message' => 'Material eliminado correctamente']);
     }
 }

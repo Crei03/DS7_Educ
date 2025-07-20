@@ -56,4 +56,25 @@ class Profesor extends Model
 
         return $nombre . ' ' . $apellido;
     }
+
+    /**
+     * Obtener todos los materiales de los cursos del profesor
+     */
+    public function materiales()
+    {
+        // Relación indirecta: profesor -> cursos -> modulos -> materiales
+        return \App\Domain\ContenidoDigital\Models\Material::whereHas('modulo.curso', function ($q) {
+            $q->where('profesor_id', $this->getKey());
+        });
+    }
+    /**
+     * Obtener todas las evaluaciones de los cursos del profesor
+     */
+    public function evaluaciones()
+    {
+        // Relación indirecta: profesor -> cursos -> evaluaciones
+        return \App\Domain\Evaluacion\Models\Evaluacion::whereHas('curso', function ($q) {
+            $q->where('profesor_id', $this->getKey());
+        });
+    }
 }

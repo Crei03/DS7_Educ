@@ -136,4 +136,63 @@ class ProfesorController extends Controller
             ]
         ]);
     }
+
+    /**
+     * Obtener todos los materiales de los cursos del profesor
+     */
+    public function materiales(Profesor $profesor): JsonResponse
+    {
+        $materiales = $profesor->materiales()->with(['modulo.curso'])->get();
+        return response()->json([
+            'data' => [
+                'profesor' => $profesor,
+                'materiales' => $materiales
+            ]
+        ]);
+    }
+
+    /**
+     * Obtener todas las evaluaciones de los cursos del profesor
+     */
+    public function evaluaciones(Profesor $profesor): JsonResponse
+    {
+        $evaluaciones = $profesor->evaluaciones()->with(['curso'])->get();
+        return response()->json([
+            'data' => [
+                'profesor' => $profesor,
+                'evaluaciones' => $evaluaciones
+            ]
+        ]);
+    }
+
+    /**
+     * Obtener el progreso de los estudiantes matriculados en los cursos del profesor
+     */
+    public function progresoEstudiantes(Profesor $profesor): JsonResponse
+    {
+        $cursos = $profesor->cursos()->with(['estudiantes'])->get();
+        $resultado = [];
+        foreach ($cursos as $curso) {
+            $estudiantes = $curso->estudiantes->map(function ($estudiante) use ($curso) {
+                return [
+                    'id' => $estudiante->id,
+                    'nombre' => $estudiante->fullName(),
+                    'correo' => $estudiante->correo,
+                    'progreso' => $estudiante->pivot->progreso,
+                    'fecha_matricula' => $estudiante->pivot->fecha,
+                ];
+            });
+            $resultado[] = [
+                'curso_id' => $curso->id,
+                'curso_titulo' => $curso->titulo,
+                'estudiantes' => $estudiantes,
+            ];
+        }
+        return response()->json([
+            'data' => [
+                'profesor' => $profesor,
+                'cursos' => $resultado
+            ]
+        ]);
+    }
 }

@@ -51,9 +51,15 @@ Route::middleware('auth:sanctum')->group(function () {
     // Rutas de Profesores
     Route::apiResource('profesores', ProfesorController::class);
     Route::get('profesores/{profesor}/cursos', [ProfesorController::class, 'cursos']);
+    Route::get('profesores/{profesor}/materiales', [ProfesorController::class, 'materiales']);
+    Route::get('profesores/{profesor}/evaluaciones', [ProfesorController::class, 'evaluaciones']);
+    Route::get('profesores/{profesor}/progreso-estudiantes', [ProfesorController::class, 'progresoEstudiantes']);
+    Route::middleware('auth:sanctum')->put('/profesor/{id}', [ProfesorController::class, 'update']);
 
     // Rutas de Evaluaciones
-    Route::apiResource('evaluaciones', EvaluacionController::class);
+    Route::apiResource('evaluaciones', EvaluacionController::class)->parameters([
+        'evaluaciones' => 'evaluacion'
+    ]);
     Route::post('evaluaciones/{evaluacion}/resolver', [EvaluacionController::class, 'resolverEvaluacion']);
     Route::get('evaluaciones/{evaluacion}/resultados', [EvaluacionController::class, 'resultados']);
 

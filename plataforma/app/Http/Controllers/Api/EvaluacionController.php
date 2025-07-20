@@ -45,7 +45,14 @@ class EvaluacionController extends Controller
 
     public function show(Evaluacion $evaluacion): JsonResponse
     {
+        // Debug temporal - verificar qué evaluación está llegando
+        \Log::info('Evaluacion ID recibida:', ['id' => $evaluacion->id]);
+
         $evaluacion->load(['curso', 'preguntas.opciones']);
+
+        // Debug temporal
+        \Log::info('Evaluacion data después del load:', $evaluacion->toArray());
+
         return response()->json($evaluacion);
     }
 

@@ -21,7 +21,7 @@ class CrearMaterialAction
 
     private function validarTipoMaterial(string $tipo): void
     {
-        $tiposValidos = ['video', 'documento', 'enlace', 'presentacion', 'audio'];
+        $tiposValidos = ['pdf', 'link', 'zip'];
 
         if (!in_array($tipo, $tiposValidos)) {
             throw new \InvalidArgumentException("Tipo de material no válido: {$tipo}");
