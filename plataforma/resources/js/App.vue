@@ -3,7 +3,16 @@
 </template>
 
 <script setup>
-// Componente raíz
+import { onMounted } from 'vue'
+import { useAuthStore } from '@/stores/auth'
+
+const authStore = useAuthStore()
+
+onMounted(() => {
+  // Solo inicializar autenticación desde localStorage
+  // No verificar con el servidor en cada recarga para evitar logouts innecesarios
+  authStore.initializeAuth()
+})
 </script>
 
 <style>

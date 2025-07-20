@@ -27,10 +27,10 @@ api.interceptors.request.use(
 api.interceptors.response.use(
     (response) => response,
     (error) => {
+        // Solo limpiar datos locales en 401, pero no redirigir automáticamente
+        // Dejar que cada componente maneje la redirección según su contexto
         if (error.response?.status === 401) {
-            localStorage.removeItem('auth_token')
-            localStorage.removeItem('user')
-            window.location.href = '/login'
+            // No redirigir automáticamente, dejar que el store o componente lo maneje
         }
         return Promise.reject(error)
     }

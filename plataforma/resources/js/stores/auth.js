@@ -48,7 +48,7 @@ export const useAuthStore = defineStore('auth', {
             try {
                 await api.post('/auth/logout')
             } catch (error) {
-                console.error('Error al cerrar sesión:', error)
+                // Error silencioso en logout
             } finally {
                 this.user = null
                 this.token = null
@@ -60,21 +60,37 @@ export const useAuthStore = defineStore('auth', {
         },
 
         async fetchUser() {
-            if (!this.token) return
+            if (!this.token) return false
 
             try {
                 const response = await api.get('/user')
                 this.user = response.data
                 this.isAuthenticated = true
                 localStorage.setItem('user', JSON.stringify(response.data))
+                return true
             } catch (error) {
-                this.logout()
+                // Solo hacer logout si es un error 401 (token inválido)
+                if (error.response?.status === 401) {
+                    this.logout()
+                    return false
+                }
+                // Para otros errores (red, servidor), mantener la sesión
+                return true
             }
         },
 
         initializeAuth() {
-            if (this.token && this.user) {
-                this.isAuthenticated = true
+            const token = localStorage.getItem('auth_token')
+            const userJson = localStorage.getItem('user')
+
+            if (token && userJson) {
+                try {
+                    this.token = token
+                    this.user = JSON.parse(userJson)
+                    this.isAuthenticated = true
+                } catch (error) {
+                    this.logout()
+                }
             }
         }
     }

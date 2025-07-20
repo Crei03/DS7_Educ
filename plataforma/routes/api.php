@@ -43,10 +43,23 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('estudiantes/{estudiante}/matricular', [EstudianteController::class, 'matricular']);
     Route::get('estudiantes/{estudiante}/cursos', [EstudianteController::class, 'cursosMatriculados']);
 
+    // Rutas específicas para estudiantes autenticados
+    Route::prefix('estudiante')->group(function () {
+        Route::get('cursos/{curso}/progreso', [EstudianteController::class, 'progresoDetallado']);
+        Route::post('materiales/{material}/marcar-visto', [MaterialController::class, 'marcarVisto']);
+        Route::get('cursos/{curso}/evaluaciones', [EvaluacionController::class, 'evaluacionesPorCurso']); // Nuevo endpoint
+        Route::post('evaluaciones/{evaluacion}/resolver', [EvaluacionController::class, 'resolverEvaluacionEstudiante']); // Nuevo endpoint  
+        Route::get('evaluaciones/historial', [EvaluacionController::class, 'historialEstudiante']); // Nuevo endpoint
+        // Endpoint para obtener materiales de un módulo de un curso
+        Route::get('cursos/{curso}/modulos/{modulo}/materiales', [\App\Http\Controllers\Api\ModuloController::class, 'show']);
+    });
+
     // Rutas de Cursos
+    Route::get('cursos/disponibles', [CursoController::class, 'disponibles']); // Debe ir antes de apiResource
     Route::apiResource('cursos', CursoController::class);
     Route::get('cursos/{curso}/estudiantes', [CursoController::class, 'estudiantes']);
     Route::get('cursos/{curso}/modulos', [CursoController::class, 'modulos']);
+    Route::post('cursos/{curso}/matricular', [CursoController::class, 'matricular']);
 
     // Rutas de Profesores
     Route::apiResource('profesores', ProfesorController::class);

@@ -85,4 +85,67 @@ class MaterialController extends Controller
 
         return response()->json(['message' => 'Material eliminado correctamente']);
     }
+
+    /**
+     * Marcar un material como visto por el estudiante autenticado
+     */
+    public function marcarVisto(Request $request, $materialId): JsonResponse
+    {
+        try {
+            $user = $request->user();
+
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Usuario no autenticado'
+                ], 401);
+            }
+
+            // Buscar el estudiante asociado al usuario
+            $estudiante = \App\Domain\Estudiante\Models\Estudiante::where('correo', $user->email)->first();
+
+            if (!$estudiante) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Estudiante no encontrado'
+                ], 404);
+            }
+
+            // Verificar que el material existe
+            $material = Material::findOrFail($materialId);
+
+            // Verificar si ya está marcado como visto
+            $yaVisto = \Illuminate\Support\Facades\DB::table('material_visto')
+                ->where('estudiante_id', $estudiante->id)
+                ->where('material_id', $materialId)
+                ->exists();
+
+            if (!$yaVisto) {
+                // Marcar como visto
+                \Illuminate\Support\Facades\DB::table('material_visto')->insert([
+                    'estudiante_id' => $estudiante->id,
+                    'material_id' => $materialId,
+                    'visto_en' => now()
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Material marcado como visto',
+                'visto_en' => now()
+            ]);
+
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Material no encontrado'
+            ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al marcar material como visto',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

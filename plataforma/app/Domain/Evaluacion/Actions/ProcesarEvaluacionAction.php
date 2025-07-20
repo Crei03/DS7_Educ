@@ -33,10 +33,8 @@ class ProcesarEvaluacionAction
         return Resultado::create([
             'estudiante_id' => $estudianteId,
             'evaluacion_id' => $evaluacionId,
-            'puntaje' => $puntajeTotal,
-            'porcentaje' => $porcentaje,
-            'respuestas' => json_encode($respuestas),
-            'completado_en' => now(),
+            'puntaje' => $porcentaje,
+            'fecha' => now(),
         ]);
     }
 }

@@ -18,6 +18,7 @@ class Resultado extends Model
         'evaluacion_id',
         'estudiante_id',
         'puntaje',
+        'fecha',
     ];
 
     protected function casts(): array
