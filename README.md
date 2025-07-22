@@ -10,13 +10,13 @@
 
 ### 🎯 Características Principales
 
--   ✅ Gestión completa de cursos y módulos
--   ✅ Administración de estudiantes y profesores
--   ✅ Contenidos digitales (PDFs, enlaces, archivos ZIP)
--   ✅ Sistema de evaluaciones con preguntas de opción múltiple
--   ✅ API REST con autenticación Sanctum
--   ✅ Interfaz web responsiva con Vue.js
--   ✅ Datos de prueba con locale panameño (Faker es_PA)
+- ✅ Gestión completa de cursos y módulos
+- ✅ Administración de estudiantes y profesores
+- ✅ Contenidos digitales (PDFs, enlaces, archivos ZIP)
+- ✅ Sistema de evaluaciones con preguntas de opción múltiple
+- ✅ API REST con autenticación Sanctum
+- ✅ Interfaz web responsiva con Vue.js
+- ✅ Datos de prueba con locale panameño (Faker es_PA)
 
 ## 📁 Estructura del Proyecto
 
@@ -166,96 +166,96 @@ storage/
 
 ### Requisitos Previos
 
--   PHP 8.2 o superior
--   Composer
--   MySQL 5.7+ o MariaDB
--   Node.js y npm
--   XAMPP (para desarrollo local)
+- PHP 8.2 o superior
+- Composer
+- MySQL 5.7+ o MariaDB
+- Node.js y npm
+- XAMPP (para desarrollo local)
 
 ### Pasos de Instalación
 
 1. **Clonar el repositorio**
 
-    ```bash
-    git clone [repository-url]
-    cd plataforma
-    ```
+   ```bash
+   git clone [repository-url]
+   cd plataforma
+   ```
 
 2. **Instalar dependencias PHP**
 
-    ```bash
-    composer install
-    ```
+   ```bash
+   composer install
+   ```
 
 3. **Instalar dependencias Node.js**
 
-    ```bash
-    npm install
-    ```
+   ```bash
+   npm install
+   ```
 
 4. **Configurar archivo de entorno**
 
-    ```bash
-    cp .env.example .env
-    ```
+   ```bash
+   cp .env.example .env
+   ```
 
 5. **Configurar base de datos en `.env`**
 
-    ```env
-    DB_CONNECTION=mysql
-    DB_HOST=127.0.0.1
-    DB_PORT=3306
-    DB_DATABASE=plataforma_academica
-    DB_USERNAME=root
-    DB_PASSWORD=
-    ```
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=plataforma_academica
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
 
 6. **Generar clave de aplicación**
 
-    ```bash
-    php artisan key:generate
-    ```
+   ```bash
+   php artisan key:generate
+   ```
 
 7. **Ejecutar migraciones y seeders**
 
-    ```bash
-    php artisan migrate:fresh --seed
-    ```
+   ```bash
+   php artisan migrate:fresh --seed
+   ```
 
 8. **Compilar assets del frontend**
 
-    ```bash
-    npm run build
-    ```
+   ```bash
+   npm run build
+   ```
 
 9. **Iniciar servidor de desarrollo**
-    ```bash
-    php artisan serve
-    ```
+   ```bash
+   php artisan serve
+   ```
 
 ## 📡 API Endpoints
 
 ### Autenticación
 
--   `POST /api/login` - Iniciar sesión
--   `POST /api/logout` - Cerrar sesión
--   `POST /api/register` - Registro de usuarios
+- `POST /api/login` - Iniciar sesión
+- `POST /api/logout` - Cerrar sesión
+- `POST /api/register` - Registro de usuarios
 
 ### Estudiantes
 
--   `GET /api/estudiante/cursos` - Cursos del estudiante
--   `GET /api/estudiante/cursos/{id}/progreso` - Progreso detallado
--   `GET /api/cursos/disponibles` - Cursos disponibles para matrícula
--   `POST /api/cursos/{id}/matricular` - Matricular en curso
+- `GET /api/estudiante/cursos` - Cursos del estudiante
+- `GET /api/estudiante/cursos/{id}/progreso` - Progreso detallado
+- `GET /api/cursos/disponibles` - Cursos disponibles para matrícula
+- `POST /api/cursos/{id}/matricular` - Matricular en curso
 
 ### Contenidos
 
--   `POST /api/estudiante/materiales/{id}/marcar-visto` - Marcar material como visto
+- `POST /api/estudiante/materiales/{id}/marcar-visto` - Marcar material como visto
 
 ### Evaluaciones
 
--   `GET /api/evaluaciones/{id}` - Obtener evaluación
--   `POST /api/evaluaciones/{id}/responder` - Responder evaluación
+- `GET /api/evaluaciones/{id}` - Obtener evaluación
+- `POST /api/evaluaciones/{id}/responder` - Responder evaluación
 
 > **Nota**: Todos los endpoints requieren autenticación mediante Sanctum tokens.
 
@@ -263,17 +263,17 @@ storage/
 
 ### Entidades Principales
 
--   **profesores** - Información de profesores (cédula, nombre, email)
--   **estudiantes** - Información de estudiantes (cédula, nombre, email)
--   **cursos** - Cursos impartidos por profesores
--   **modulos** - Módulos que componen cada curso
--   **materiales** - Contenidos digitales (PDF, ZIP, enlaces)
--   **matriculas** - Relación estudiante-curso con progreso
--   **evaluaciones** - Evaluaciones por curso
--   **preguntas** - Preguntas de opción múltiple
--   **opciones** - Opciones de respuesta para cada pregunta
--   **resultados** - Resultados de evaluaciones por estudiante
--   **material_visto** - Seguimiento de materiales vistos por estudiante
+- **profesores** - Información de profesores (cédula, nombre, email)
+- **estudiantes** - Información de estudiantes (cédula, nombre, email)
+- **cursos** - Cursos impartidos por profesores
+- **modulos** - Módulos que componen cada curso
+- **materiales** - Contenidos digitales (PDF, ZIP, enlaces)
+- **matriculas** - Relación estudiante-curso con progreso
+- **evaluaciones** - Evaluaciones por curso
+- **preguntas** - Preguntas de opción múltiple
+- **opciones** - Opciones de respuesta para cada pregunta
+- **resultados** - Resultados de evaluaciones por estudiante
+- **material_visto** - Seguimiento de materiales vistos por estudiante
 
 ## 🛠️ Desarrollo
 
@@ -281,37 +281,27 @@ storage/
 
 El proyecto sigue estrictamente el patrón **Model-View-Controller (MVC)**:
 
--   **Models**: Ubicados en `/app/Domain/*/Models/` - Representan los datos y la lógica de negocio
--   **Views**: Ubicadas en `/resources/views/` y `/resources/js/views/` - Interfaces de usuario (Blade y Vue.js)
--   **Controllers**: Ubicados en `/app/Http/Controllers/` - Manejan las peticiones y coordinan Models y Views
+- **Models**: Ubicados en `/app/Domain/*/Models/` - Representan los datos y la lógica de negocio
+- **Views**: Ubicadas en `/resources/views/` y `/resources/js/views/` - Interfaces de usuario (Blade y Vue.js)
+- **Controllers**: Ubicados en `/app/Http/Controllers/` - Manejan las peticiones y coordinan Models y Views
 
 ### Estructura de Comandos Artisan
 
 ```bash
-# Crear un nuevo modelo en un dominio
-php artisan make:model Domain/Curso/Models/NuevoModelo
-
-# Crear una nueva acción
-php artisan make:class Domain/Curso/Actions/NuevaAccion
-
+\
 # Ejecutar migraciones
 php artisan migrate
 
 # Poblar base de datos con datos de prueba
-php artisan db:seed --class=TestDataSeeder
+php artisan db:seed
 ```
 
-## 📚 Datos de Prueba
+## Usuario de prueba
 
-El seeder `TestDataSeeder` incluye datos coherentes con el contexto panameño:
+Usar con Postman
+Para facilitar las pruebas, se ha creado un usuario de prueba con las siguientes credenciales:
 
--   **Cédulas**: Formato `\d{1,2}-\d{4,5}-\d{5,6}`
--   **Emails**: Dominios `.pa`
--   **Nombres**: Nombres panameños comunes
--   **Cursos**: Temáticas tecnológicas relevantes
+- **Email**: `admin@academia.edu.pa`
+- **Contraseña**: `Password123`
 
-### Usuario de Prueba
-
--   **Email**: `estudiante@test.com`
--   **Password**: `password123`
--   **Rol**: Estudiante
+Este usuario tiene acceso completo a la plataforma y puede ser utilizado para realizar pruebas de funcionalidad.

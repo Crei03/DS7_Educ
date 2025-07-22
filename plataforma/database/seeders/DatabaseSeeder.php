@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Admin Academia',
             'email' => 'admin@academia.edu.pa',
+            'password' => bcrypt('Password123')
         ]);
     }
 }
