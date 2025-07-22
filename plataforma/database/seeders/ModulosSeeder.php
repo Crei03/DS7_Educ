@@ -3,72 +3,42 @@
 namespace Database\Seeders;
 
 use App\Domain\ContenidoDigital\Models\Modulo;
-use App\Domain\Curso\Models\Curso;
 use Illuminate\Database\Seeder;
 
 class ModulosSeeder extends Seeder
 {
-    public function run(): void
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
     {
-        // Obtener cursos existentes
-        $cursos = Curso::all();
-
-        if ($cursos->isEmpty()) {
-            $this->command->info('No hay cursos disponibles. Ejecuta CursosSeeder primero.');
-            return;
-        }
-
-        $modulosPorCurso = [
-            'Introducción a Laravel' => [
-                'Fundamentos del Framework',
-                'Instalación y Configuración',
-                'Arquitectura MVC',
-                'Routing y Controllers',
-                'Views y Blade',
-            ],
-            'JavaScript Avanzado' => [
-                'Conceptos Avanzados',
-                'Promises y Async/Await',
-                'Manipulación del DOM',
-                'APIs y Fetch',
-                'Proyecto Final',
-            ],
-            'Diseño UI/UX' => [
-                'Principios de Diseño',
-                'Research y User Personas',
-                'Wireframes y Prototyping',
-                'Design Systems',
-                'Testing de Usabilidad',
-            ],
-            'Marketing Digital' => [
-                'Fundamentos del Marketing Digital',
-                'SEO y SEM',
-                'Redes Sociales',
-                'Email Marketing',
-                'Analytics y Métricas',
-            ],
+        $modulos = [
+            ['id' => 1, 'curso_id' => 1, 'titulo' => 'Introducción a Python', 'orden' => 1],
+            ['id' => 2, 'curso_id' => 1, 'titulo' => 'Estructuras de Datos', 'orden' => 2],
+            ['id' => 3, 'curso_id' => 2, 'titulo' => 'Fundamentos de React', 'orden' => 1],
+            ['id' => 4, 'curso_id' => 2, 'titulo' => 'Hooks y State Management', 'orden' => 2],
+            ['id' => 5, 'curso_id' => 3, 'titulo' => 'Consultas SQL Básicas', 'orden' => 1],
+            ['id' => 6, 'curso_id' => 3, 'titulo' => 'Modelado de Datos', 'orden' => 2],
+            ['id' => 7, 'curso_id' => 4, 'titulo' => 'SEO y SEM', 'orden' => 1],
+            ['id' => 8, 'curso_id' => 4, 'titulo' => 'Redes Sociales y Content Marketing', 'orden' => 2],
+            ['id' => 9, 'curso_id' => 5, 'titulo' => 'Herramientas y Espacio de Trabajo', 'orden' => 1],
+            ['id' => 10, 'curso_id' => 5, 'titulo' => 'Creación de Vectores y Logos', 'orden' => 2],
+            ['id' => 11, 'curso_id' => 6, 'titulo' => 'Introducción a Pandas y NumPy', 'orden' => 1],
+            ['id' => 12, 'curso_id' => 6, 'titulo' => 'Visualización de Datos con Matplotlib', 'orden' => 2],
+            ['id' => 13, 'curso_id' => 7, 'titulo' => 'Configuración del Entorno de Desarrollo', 'orden' => 1],
+            ['id' => 14, 'curso_id' => 7, 'titulo' => 'Widgets y Layouts en Flutter', 'orden' => 2],
+            ['id' => 15, 'curso_id' => 8, 'titulo' => 'Principios de Scrum', 'orden' => 1],
+            ['id' => 16, 'curso_id' => 8, 'titulo' => 'Kanban y Lean', 'orden' => 2],
+            ['id' => 17, 'curso_id' => 9, 'titulo' => 'Tipos de Ataques y Vulnerabilidades', 'orden' => 1],
+            ['id' => 18, 'curso_id' => 9, 'titulo' => 'Criptografía y Seguridad en Redes', 'orden' => 2],
+            ['id' => 19, 'curso_id' => 10, 'titulo' => 'Presentaciones y Reuniones', 'orden' => 1],
+            ['id' => 20, 'curso_id' => 10, 'titulo' => 'Negociación y Networking', 'orden' => 2],
         ];
 
-        $modulosGenericos = [
-            'Módulo 1',
-            'Módulo 2',
-            'Módulo 3',
-            'Módulo 4',
-            'Módulo 5'
-        ];
-
-        foreach ($cursos as $curso) {
-            $modulos = $modulosPorCurso[$curso->nombre] ?? $modulosGenericos;
-            foreach ($modulos as $orden => $tituloModulo) {
-                Modulo::create([
-                    'curso_id' => $curso->id,
-                    'titulo' => $tituloModulo,
-                    'orden' => $orden + 1,
-                ]);
-            }
-            $this->command->info("✅ Creados " . count($modulos) . " módulos para el curso: {$curso->nombre}");
+        foreach ($modulos as $modulo) {
+            Modulo::create($modulo);
         }
-        $totalModulos = Modulo::count();
-        $this->command->info("🎯 Total de módulos creados: {$totalModulos}");
     }
 }

@@ -2,89 +2,43 @@
 
 namespace Database\Seeders;
 
-use App\Domain\Evaluacion\Models\Evaluacion;
 use App\Domain\Evaluacion\Models\Resultado;
-use App\Domain\Estudiante\Models\Estudiante;
 use Illuminate\Database\Seeder;
-use Faker\Factory as Faker;
 
 class ResultadosSeeder extends Seeder
 {
-    public function run(): void
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
     {
-        $faker = Faker::create('es_PA');
-        $evaluaciones = Evaluacion::with('preguntas')->get();
-        $estudiantes = Estudiante::all();
+        $resultados = [
+            ['id' => 1, 'evaluacion_id' => 1, 'estudiante_id' => 1, 'puntaje' => 85.50, 'fecha' => '2023-12-01 10:00:00'],
+            ['id' => 2, 'evaluacion_id' => 2, 'estudiante_id' => 2, 'puntaje' => 92.00, 'fecha' => '2023-12-02 11:30:00'],
+            ['id' => 3, 'evaluacion_id' => 3, 'estudiante_id' => 3, 'puntaje' => 76.00, 'fecha' => '2023-12-03 09:45:00'],
+            ['id' => 4, 'evaluacion_id' => 4, 'estudiante_id' => 4, 'puntaje' => 98.75, 'fecha' => '2023-12-04 14:00:00'],
+            ['id' => 5, 'evaluacion_id' => 5, 'estudiante_id' => 5, 'puntaje' => 65.00, 'fecha' => '2023-12-05 16:00:00'],
+            ['id' => 6, 'evaluacion_id' => 1, 'estudiante_id' => 2, 'puntaje' => 95.00, 'fecha' => '2023-12-01 10:05:00'],
+            ['id' => 7, 'evaluacion_id' => 2, 'estudiante_id' => 18, 'puntaje' => 100.00, 'fecha' => '2023-12-02 11:35:00'],
+            ['id' => 8, 'evaluacion_id' => 3, 'estudiante_id' => 1, 'puntaje' => 88.50, 'fecha' => '2023-12-03 09:50:00'],
+            ['id' => 9, 'evaluacion_id' => 6, 'estudiante_id' => 6, 'puntaje' => 91.20, 'fecha' => '2023-12-06 13:00:00'],
+            ['id' => 10, 'evaluacion_id' => 7, 'estudiante_id' => 7, 'puntaje' => 80.00, 'fecha' => '2023-12-07 15:20:00'],
+            ['id' => 11, 'evaluacion_id' => 8, 'estudiante_id' => 8, 'puntaje' => 79.50, 'fecha' => '2023-12-08 11:00:00'],
+            ['id' => 12, 'evaluacion_id' => 9, 'estudiante_id' => 9, 'puntaje' => 94.00, 'fecha' => '2023-12-09 10:30:00'],
+            ['id' => 13, 'evaluacion_id' => 10, 'estudiante_id' => 10, 'puntaje' => 72.80, 'fecha' => '2023-12-10 12:00:00'],
+            ['id' => 14, 'evaluacion_id' => 11, 'estudiante_id' => 1, 'puntaje' => 90.00, 'fecha' => '2023-12-11 14:10:00'],
+            ['id' => 15, 'evaluacion_id' => 12, 'estudiante_id' => 2, 'puntaje' => 88.00, 'fecha' => '2023-12-12 13:45:00'],
+            ['id' => 16, 'evaluacion_id' => 13, 'estudiante_id' => 3, 'puntaje' => 75.50, 'fecha' => '2023-12-13 10:00:00'],
+            ['id' => 17, 'evaluacion_id' => 14, 'estudiante_id' => 6, 'puntaje' => 93.00, 'fecha' => '2023-12-14 11:00:00'],
+            ['id' => 18, 'evaluacion_id' => 18, 'estudiante_id' => 17, 'puntaje' => 89.00, 'fecha' => '2023-12-15 09:00:00'],
+            ['id' => 19, 'evaluacion_id' => 19, 'estudiante_id' => 17, 'puntaje' => 96.50, 'fecha' => '2023-12-16 10:30:00'],
+            ['id' => 20, 'evaluacion_id' => 20, 'estudiante_id' => 17, 'puntaje' => 91.00, 'fecha' => '2023-12-17 11:45:00'],
+        ];
 
-        foreach ($evaluaciones as $evaluacion) {
-            // El 60-80% de los estudiantes resuelven cada evaluación
-            $participantes = $estudiantes->random($faker->numberBetween(
-                (int) ($estudiantes->count() * 0.6),
-                (int) ($estudiantes->count() * 0.8)
-            ));
-
-            foreach ($participantes as $estudiante) {
-                // Simular puntaje basado en distribución realista
-                $totalPreguntas = $evaluacion->preguntas->count();
-
-                if ($totalPreguntas > 0) {
-                    // Generar respuestas correctas con distribución normal
-                    $respuestasCorrectas = $this->generarRespuestasConDistribucionNormal($totalPreguntas);
-                    $puntaje = ($respuestasCorrectas / $totalPreguntas) * 100;
-                    $porcentaje = round($puntaje, 1);
-
-                    // Simular respuestas JSON
-                    $respuestas = [];
-                    foreach ($evaluacion->preguntas as $index => $pregunta) {
-                        $opciones = $pregunta->opciones;
-                        if ($opciones->count() > 0) {
-                            // Decidir si responde correcta o incorrectamente
-                            if ($index < $respuestasCorrectas) {
-                                $respuestas[$pregunta->id] = $opciones->where('es_correcta', true)->first()->id ?? $opciones->first()->id;
-                            } else {
-                                $respuestas[$pregunta->id] = $opciones->where('es_correcta', false)->random()->id ?? $opciones->first()->id;
-                            }
-                        }
-                    }
-
-                    Resultado::create([
-                        'evaluacion_id' => $evaluacion->id,
-                        'estudiante_id' => $estudiante->id,
-                        'puntaje' => round($puntaje, 2),
-                    ]);
-                }
-            }
+        foreach ($resultados as $resultado) {
+            Resultado::create($resultado);
         }
-    }
-
-    /**
-     * Genera número de respuestas correctas con distribución que simula
-     * resultados académicos reales (campana de Gauss)
-     */
-    private function generarRespuestasConDistribucionNormal(int $totalPreguntas): int
-    {
-        // Media del 70% de respuestas correctas
-        $media = $totalPreguntas * 0.7;
-        $desviacion = $totalPreguntas * 0.15;
-
-        // Generar valor con distribución normal aproximada
-        $respuestasCorrectas = round($this->normalRandom($media, $desviacion));
-
-        // Asegurar que esté dentro del rango válido
-        return max(0, min($totalPreguntas, $respuestasCorrectas));
-    }
-
-    /**
-     * Genera un número aleatorio con distribución normal aproximada
-     */
-    private function normalRandom(float $media, float $desviacion): float
-    {
-        // Método Box-Muller simplificado
-        $u1 = mt_rand(1, 9999) / 10000;
-        $u2 = mt_rand(1, 9999) / 10000;
-
-        $z0 = sqrt(-2 * log($u1)) * cos(2 * pi() * $u2);
-
-        return $z0 * $desviacion + $media;
     }
 }
