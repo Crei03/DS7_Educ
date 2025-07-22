@@ -44,7 +44,8 @@ import {
   ClipboardDocumentListIcon,
   UsersIcon,
   UserIcon,
-  ArrowRightOnRectangleIcon
+  ArrowRightOnRectangleIcon,
+  Squares2X2Icon
 } from '@heroicons/vue/24/outline'
 import { useRouter } from 'vue-router'
 
@@ -70,6 +71,11 @@ const menuItems = [
     name: 'Materiales',
     path: '/profesor/materiales',
     icon: DocumentTextIcon
+  },
+  {
+    name: 'Módulos',
+    path: '/profesor/modulos',
+    icon: Squares2X2Icon
   },
   {
     name: 'Evaluaciones',

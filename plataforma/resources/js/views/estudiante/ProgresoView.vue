@@ -1,97 +1,94 @@
-
 <template>
-  <div class="max-w-3xl mx-auto px-4 py-8">
+  <div class="progreso-view">
     <!-- Header -->
-    <div class="bg-white rounded-xl shadow-sm mb-8 p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-      <div>
-        <h1 class="text-3xl font-extrabold text-gray-900 mb-1">Mi Progreso</h1>
-        <p class="text-gray-500 text-base">Seguimiento detallado de tu avance en todos los cursos</p>
+    <div class="page-header">
+      <div class="header-content">
+        <h1 class="page-title">Mi Progreso</h1>
+        <p class="page-subtitle">Seguimiento detallado de tu avance en todos los cursos</p>
       </div>
-      <div class="flex gap-6">
-        <div class="flex flex-col items-center">
-          <div class="text-2xl font-bold text-primary">{{ estadisticas.totalCursos }}</div>
-          <div class="text-xs text-gray-500">Cursos</div>
+      <div class="stats-summary">
+        <div class="stat-card">
+          <div class="stat-number">{{ estadisticas.totalCursos }}</div>
+          <div class="stat-label">Cursos</div>
         </div>
-        <div class="flex flex-col items-center">
-          <div class="text-2xl font-bold text-primary">{{ estadisticas.cursosCompletados }}</div>
-          <div class="text-xs text-gray-500">Completados</div>
+        <div class="stat-card">
+          <div class="stat-number">{{ estadisticas.cursosCompletados }}</div>
+          <div class="stat-label">Completados</div>
         </div>
-        <div class="flex flex-col items-center">
-          <div class="text-2xl font-bold text-primary">{{ estadisticas.promedioProgreso }}%</div>
-          <div class="text-xs text-gray-500">Promedio</div>
+        <div class="stat-card">
+          <div class="stat-number">{{ estadisticas.promedioProgreso }}%</div>
+          <div class="stat-label">Promedio</div>
         </div>
       </div>
     </div>
 
     <!-- Filtros -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-      <div class="flex gap-2">
+    <div class="filtros-container">
+      <div class="filtros">
         <button 
           @click="filtroActivo = 'todos'"
-          class="px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 bg-white hover:bg-blue-50 transition-colors"
-          :class="{ 'bg-primary text-white': filtroActivo === 'todos' }"
+          class="filtro-btn"
+          :class="{ active: filtroActivo === 'todos' }"
         >
           Todos los cursos
         </button>
         <button 
           @click="filtroActivo = 'progreso'"
-          class="px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 bg-white hover:bg-blue-50 transition-colors"
-          :class="{ 'bg-primary text-white': filtroActivo === 'progreso' }"
+          class="filtro-btn"
+          :class="{ active: filtroActivo === 'progreso' }"
         >
           En progreso
         </button>
         <button 
           @click="filtroActivo = 'completados'"
-          class="px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 bg-white hover:bg-blue-50 transition-colors"
-          :class="{ 'bg-primary text-white': filtroActivo === 'completados' }"
+          class="filtro-btn"
+          :class="{ active: filtroActivo === 'completados' }"
         >
           Completados
         </button>
       </div>
-      <div class="flex gap-2">
+      <div class="vista-opciones">
         <button 
           @click="vistaActual = 'cards'"
-          class="p-2 rounded-lg border border-gray-200 bg-white hover:bg-blue-50 transition-colors"
-          :class="{ 'bg-primary text-white': vistaActual === 'cards' }"
+          class="vista-btn"
+          :class="{ active: vistaActual === 'cards' }"
           title="Vista de tarjetas"
         >
-          <Squares2X2Icon class="w-5 h-5" />
+          <Squares2X2Icon class="vista-icon" />
         </button>
         <button 
           @click="vistaActual = 'lista'"
-          class="p-2 rounded-lg border border-gray-200 bg-white hover:bg-blue-50 transition-colors"
-          :class="{ 'bg-primary text-white': vistaActual === 'lista' }"
+          class="vista-btn"
+          :class="{ active: vistaActual === 'lista' }"
           title="Vista de lista"
         >
-          <ListBulletIcon class="w-5 h-5" />
+          <ListBulletIcon class="vista-icon" />
         </button>
       </div>
     </div>
 
     <!-- Loading -->
-    <div v-if="cursosStore.loading" class="flex flex-col items-center justify-center py-12">
-      <div class="animate-spin w-8 h-8 text-primary mb-4">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-full h-full"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>
-      </div>
-      <p class="text-gray-500">Cargando progreso...</p>
+    <div v-if="cursosStore.loading" class="loading-container">
+      <div class="loading-spinner"></div>
+      <p>Cargando progreso...</p>
     </div>
 
     <!-- Sin cursos -->
-    <div v-else-if="cursosFiltrados.length === 0" class="flex flex-col items-center justify-center py-16 bg-white rounded-xl shadow">
-      <BookOpenIcon class="w-16 h-16 text-primary mb-4" />
-      <h3 class="text-xl font-semibold text-gray-900 mb-2">
+    <div v-else-if="cursosFiltrados.length === 0" class="empty-state">
+      <BookOpenIcon class="empty-icon" />
+      <h3 class="empty-title">
         {{ filtroActivo === 'todos' ? 'No tienes cursos matriculados' : 'No hay cursos en esta categoría' }}
       </h3>
-      <p class="text-gray-500 mb-4">
+      <p class="empty-description">
         {{ filtroActivo === 'todos' ? 'Explora nuestro catálogo y matricúlate en tu primer curso.' : 'Cambia el filtro para ver otros cursos.' }}
       </p>
-      <router-link v-if="filtroActivo === 'todos'" to="/estudiante/explorar" class="inline-block bg-primary text-white px-5 py-2 rounded-lg font-medium hover:bg-primary-dk transition-colors">
+      <router-link v-if="filtroActivo === 'todos'" to="/estudiante/explorar" class="cta-button">
         Explorar Cursos
       </router-link>
     </div>
 
     <!-- Vista de tarjetas -->
-    <div v-else-if="vistaActual === 'cards'" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div v-else-if="vistaActual === 'cards'" class="cursos-grid">
       <ProgresoCard
         v-for="curso in cursosFiltrados"
         :key="curso.id"
@@ -102,25 +99,22 @@
     </div>
 
     <!-- Vista de lista detallada -->
-    <div v-else class="flex flex-col gap-6">
-      <div v-for="curso in cursosFiltrados" :key="curso.id" class="bg-white rounded-xl shadow p-6">
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
-          <div>
-            <h3 class="text-lg font-bold text-gray-900">{{ curso.titulo }}</h3>
-            <p class="text-gray-500 text-sm">{{ curso.descripcion }}</p>
+    <div v-else class="cursos-lista">
+      <div v-for="curso in cursosFiltrados" :key="curso.id" class="curso-detallado">
+        <div class="curso-header">
+          <div class="curso-info">
+            <h3 class="curso-titulo">{{ curso.titulo }}</h3>
+            <p class="curso-descripcion">{{ curso.descripcion }}</p>
           </div>
-          <div>
-            <div :class="[
-              'inline-flex items-center justify-center rounded-full w-14 h-14 font-bold text-lg',
-              getProgressClass(curso.progreso)
-            ]">
-              <span>{{ curso.progreso }}%</span>
+          <div class="progreso-info">
+            <div class="progreso-circular" :class="getProgressClass(curso.progreso)">
+              <span class="progreso-porcentaje">{{ curso.progreso }}%</span>
             </div>
           </div>
         </div>
 
         <!-- Módulos detallados -->
-        <div v-if="curso.modulos && curso.modulos.length > 0" class="flex flex-col gap-2 mb-4">
+        <div v-if="curso.modulos && curso.modulos.length > 0" class="modulos-container">
           <ModuloDetalle
             v-for="modulo in curso.modulos"
             :key="modulo.id"
@@ -129,17 +123,17 @@
           />
         </div>
 
-        <div class="flex gap-2">
-          <button @click="verDetalleCurso(curso)" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 bg-white text-primary font-medium hover:bg-blue-50 transition-colors">
-            <EyeIcon class="w-5 h-5" />
+        <div class="curso-actions">
+          <button @click="verDetalleCurso(curso)" class="btn-secondary">
+            <EyeIcon class="btn-icon" />
             Ver Detalle
           </button>
           <button 
             v-if="curso.progreso < 100" 
             @click="continuarCurso(curso)" 
-            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white font-medium hover:bg-primary-dk transition-colors"
+            class="btn-primary"
           >
-            <PlayIcon class="w-5 h-5" />
+            <PlayIcon class="btn-icon" />
             Continuar Curso
           </button>
         </div>
@@ -245,36 +239,71 @@ onMounted(async () => {
 })
 </script>
 
-
 <style scoped>
-/* Colores de progreso circular */
-.completado {
-  background: #e0f2fe;
+.progreso-view {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.page-header {
+  margin-bottom: 2rem;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #111827;
+  margin: 0 0 0.5rem 0;
+}
+
+.page-subtitle {
+  font-size: 1.1rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.placeholder-content {
+  background: white;
+  border-radius: 12px;
+  padding: 3rem;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.placeholder-icon {
   color: #0554f2;
-  border: 2px solid #0554f2;
+  margin-bottom: 1.5rem;
 }
-.avanzado {
-  background: #f3f4f6;
-  color: #1d4ed8;
-  border: 2px solid #1d4ed8;
+
+.placeholder-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 1rem 0;
 }
-.medio {
-  background: #fef9c3;
-  color: #ca8a04;
-  border: 2px solid #ca8a04;
+
+.placeholder-text {
+  color: #6b7280;
+  margin: 0 0 2rem 0;
 }
-.inicio {
-  background: #fee2e2;
-  color: #dc2626;
-  border: 2px solid #dc2626;
-}
-.text-primary {
-  color: #0554f2;
-}
-.bg-primary {
+
+.btn-primary {
   background: #0554f2;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
-.bg-primary-dk {
+
+.btn-primary:hover {
   background: #0540f2;
 }
+
+.w-16 { width: 4rem; }
+.h-16 { height: 4rem; }
 </style>

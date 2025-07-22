@@ -27,22 +27,23 @@
     <div v-else class="materiales-grid">
       <div 
         v-for="material in materialesStore.materiales" 
-        :key="material.id"
+        :key="material?.id || 'material-' + Math.random()"
         class="material-card"
+        v-show="material && material.id"
       >
         <div class="material-card-header">
           <div class="material-card-icon">
             <DocumentTextIcon class="material-icon" />
           </div>
-          <span class="material-card-tipo">{{ material.tipo || 'Documento' }}</span>
+          <span class="material-card-tipo">{{ material?.tipo || 'Documento' }}</span>
         </div>
         
-        <h3 class="material-card-title">{{ material.titulo }}</h3>
+        <h3 class="material-card-title">{{ material?.titulo || 'Sin título' }}</h3>
                 
         <div class="material-card-meta">
           <div class="material-meta-item">
             <span class="material-meta-label">Curso:</span>
-            <span class="material-meta-value">{{ material.modulo?.curso?.titulo || 'N/A' }}</span>
+            <span class="material-meta-value">{{ material?.modulo?.curso?.titulo || 'N/A' }}</span>
           </div>
         </div>
         
@@ -122,8 +123,8 @@
               class="form-select"
             >
               <option value="">Sin módulo específico</option>
-              <option v-for="modulo in modulosStore.modulos" :key="modulo.id" :value="modulo.id">
-                {{ modulo.titulo }}
+              <option v-for="modulo in materialesStore.modulos" :key="modulo.id" :value="modulo.id">
+                {{ modulo.titulo }} - {{ modulo.curso?.titulo || 'Curso N/A' }}
               </option>
             </select>
           </div>
@@ -200,8 +201,8 @@
               class="form-select"
             >
               <option value="">Sin módulo específico</option>
-              <option v-for="modulo in modulosStore.modulos" :key="modulo.id" :value="modulo.id">
-                {{ modulo.titulo }}
+              <option v-for="modulo in materialesStore.modulos" :key="modulo.id" :value="modulo.id">
+                {{ modulo.titulo }} - {{ modulo.curso?.titulo || 'Curso N/A' }}
               </option>
             </select>
           </div>
@@ -234,11 +235,9 @@ import {
 } from '@heroicons/vue/24/outline'
 import { useMaterialesStore } from '@/stores/materiales'
 import { useAuthStore } from '@/stores/auth'
-import { useModulosStore } from '@/stores/modulos'
 
 const materialesStore = useMaterialesStore()
 const authStore = useAuthStore()
-const modulosStore = useModulosStore()
 
 // Estados de los modales
 const mostrarModalSubir = ref(false)
@@ -321,6 +320,11 @@ const subirMaterial = async () => {
       datosFormulario.url = formSubir.url
     } else if (formSubir.archivo) {
       datosFormulario.archivo = formSubir.archivo
+      // Para archivos PDF y ZIP, usar el nombre del archivo como URL
+      datosFormulario.url = formSubir.archivo.name
+    } else {
+      // Si no es link ni archivo, requerir URL
+      datosFormulario.url = formSubir.url || ''
     }
 
     const resultado = await materialesStore.createMaterial(datosFormulario)
@@ -403,9 +407,15 @@ const formatFileSize = (bytes) => {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
 }
 
-onMounted(() => {
-  materialesStore.fetchMaterialesProfesor(authStore.user?.id)
-  modulosStore.fetchModulos()
+onMounted(async () => {
+  const profesorId = authStore.user?.id
+  if (profesorId) {
+    // Cargar materiales y módulos del profesor
+    await Promise.all([
+      materialesStore.fetchMaterialesProfesor(profesorId),
+      materialesStore.fetchModulosProfesor(profesorId)
+    ])
+  }
 })
 </script>
 

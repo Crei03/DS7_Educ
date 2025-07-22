@@ -74,8 +74,10 @@
 import { ref, computed, onMounted } from 'vue'
 import { UsersIcon } from '@heroicons/vue/24/outline'
 import { useEstudiantesStore } from '@/stores/estudiantes'
+import { useAuthStore } from '@/stores/auth'
 
 const estudiantesStore = useEstudiantesStore()
+const authStore = useAuthStore()
 const loading = ref(true)
 const estudiantesPorCurso = ref([])
 
@@ -94,9 +96,12 @@ const getIniciales = (nombre) => {
 const cargarEstudiantes = async () => {
   try {
     loading.value = true
-    // Usar el store para obtener el progreso de estudiantes del profesor (id fijo 2, puedes parametrizar)
-    await estudiantesStore.fetchProgresoEstudiantes(2)
-    estudiantesPorCurso.value = estudiantesStore.progresoEstudiantes
+    // Usar el store para obtener el progreso de estudiantes del profesor actual
+    const profesorId = authStore.user?.id
+    if (profesorId) {
+      await estudiantesStore.fetchProgresoEstudiantes(profesorId)
+      estudiantesPorCurso.value = estudiantesStore.progresoEstudiantes
+    }
   } catch (error) {
     console.error('Error cargando progreso de estudiantes:', error)
   } finally {

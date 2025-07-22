@@ -5,6 +5,7 @@ export const useMaterialesStore = defineStore('materiales', {
     state: () => ({
         materiales: [],
         materialActual: null,
+        modulos: [],
         loading: false,
         error: null
     }),
@@ -91,9 +92,12 @@ export const useMaterialesStore = defineStore('materiales', {
                 const response = await api.put(`/materiales/${materialId}`, materialData)
                 const materialActualizado = response.data.materiales
 
-                const index = this.materiales.findIndex(material => material.id === materialId)
-                if (index !== -1) {
+                const index = this.materiales.findIndex(material => material && material.id === materialId)
+                if (index !== -1 && materialActualizado) {
                     this.materiales[index] = materialActualizado
+                } else if (materialActualizado) {
+                    // Si no se encuentra el índice, agregarlo al array
+                    this.materiales.push(materialActualizado)
                 }
 
                 return { success: true, material: materialActualizado }
@@ -140,6 +144,21 @@ export const useMaterialesStore = defineStore('materiales', {
             } catch (error) {
                 console.error('Error al descargar material:', error)
                 return { success: false, error: 'Error al descargar el archivo' }
+            }
+        },
+
+        async fetchModulosProfesor(profesorId) {
+            this.loading = true
+            this.error = null
+
+            try {
+                const response = await api.get(`/profesores/${profesorId}/modulos`)
+                this.modulos = response.data.data?.modulos || response.data.modulos || []
+            } catch (error) {
+                this.error = error.response?.data?.message || 'Error al obtener módulos del profesor'
+                console.error('Error al obtener módulos del profesor:', error)
+            } finally {
+                this.loading = false
             }
         }
     }

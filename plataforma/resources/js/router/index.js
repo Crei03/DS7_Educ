@@ -43,6 +43,11 @@ const routes = [
                 component: () => import('../views/profesor/MaterialesView.vue'),
             },
             {
+                path: 'modulos',
+                name: 'ProfesorModulos',
+                component: () => import('../views/profesor/ModulosView.vue'),
+            },
+            {
                 path: 'evaluaciones',
                 name: 'ProfesorEvaluaciones',
                 component: () => import('../views/profesor/EvaluacionesView.vue'),

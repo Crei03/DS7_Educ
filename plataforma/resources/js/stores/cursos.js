@@ -309,24 +309,13 @@ export const useCursosStore = defineStore('cursos', {
                                 const material = modulo.materiales.find(m => m.id === materialId)
                                 if (material) {
                                     material.visto = true
-                                    // Recalcular progreso del módulo
-                                    const totalMateriales = modulo.materiales.length
-                                    const materialesVistos = modulo.materiales.filter(m => m.visto).length
-                                    modulo.progreso = Math.round((materialesVistos / totalMateriales) * 100)
-
-                                    // Recalcular progreso del curso
-                                    const totalModulos = curso.modulos.length
-                                    const progresoModulos = curso.modulos.reduce((sum, mod) => sum + mod.progreso, 0)
-                                    curso.progreso = Math.round(progresoModulos / totalModulos)
                                 }
                             }
                         })
                     }
                 })
-
             } catch (error) {
                 console.error('Error al marcar material como visto:', error)
-                throw error
             }
         }
     }

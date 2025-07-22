@@ -32,11 +32,6 @@
       >
         <div class="curso-card-header">
           <h3 class="curso-card-title">{{ curso.titulo }}</h3>
-          <span 
-            :class="['curso-card-status', curso.activo ? 'curso-activo' : 'curso-inactivo']"
-          >
-            {{ curso.activo ? 'Activo' : 'Inactivo' }}
-          </span>
         </div>
         
         <p class="curso-card-description">{{ curso.descripcion || 'Sin descripción' }}</p>

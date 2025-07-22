@@ -32,10 +32,12 @@ export const useEvaluacionesEstudianteStore = defineStore('evaluacionesEstudiant
             if (completadas.length === 0) return 0
 
             const suma = completadas.reduce((acc, evaluacion) => {
-                return acc + evaluacion.resultado_estudiante.puntaje
+                const puntaje = evaluacion.resultado_estudiante?.puntaje || 0
+                return acc + puntaje
             }, 0)
 
-            return Math.round(suma / completadas.length)
+            const promedio = suma / completadas.length
+            return isNaN(promedio) ? 0 : Math.round(promedio)
         },
 
         evaluacionEnProgreso: (state) => {
