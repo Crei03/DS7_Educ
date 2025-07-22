@@ -11,7 +11,7 @@ class CrearEstudianteAction
     public function execute(array $datos): Estudiante
     {
         // Validar que la cédula tenga el formato panameño
-        if (!preg_match('/^\d{1,2}-\d{4,5}-\d{5,6}$/', $datos['cedula'])) {
+        if (!preg_match('/^(1[0-3]|[1-9])-\d{1,6}-\d{1,7}$/', $datos['cedula'])) {
             throw ValidationException::withMessages([
                 'cedula' => ['La cédula debe tener el formato panameño: X-XXXX-XXXXX']
             ]);

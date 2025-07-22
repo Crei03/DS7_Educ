@@ -114,9 +114,23 @@ class EvaluacionController extends Controller
     /**
      * Obtener evaluaciones de un curso específico para estudiante
      */
-    public function evaluacionesPorCurso(Curso $curso): JsonResponse
+    public function evaluacionesPorCurso(Request $request, Curso $curso): JsonResponse
     {
-        $estudiante = Auth::user();
+        $user = $request->user();
+
+        // Verificar si el usuario autenticado es un estudiante directamente
+        if ($user instanceof \App\Domain\Estudiante\Models\Estudiante) {
+            $estudiante = $user;
+        } else {
+            // Si es un User, buscar el estudiante asociado por correo
+            $estudiante = \App\Domain\Estudiante\Models\Estudiante::where('correo', $user->email)->first();
+        }
+
+        if (!$estudiante) {
+            return response()->json([
+                'error' => 'Estudiante no encontrado'
+            ], 404);
+        }
 
         // Verificar que el estudiante esté matriculado en el curso
         $matricula = $estudiante->cursos()->where('cursos.id', $curso->id)->first();
@@ -154,7 +168,21 @@ class EvaluacionController extends Controller
      */
     public function resolverEvaluacionEstudiante(Request $request, Evaluacion $evaluacion): JsonResponse
     {
-        $estudiante = Auth::user();
+        $user = $request->user();
+
+        // Verificar si el usuario autenticado es un estudiante directamente
+        if ($user instanceof \App\Domain\Estudiante\Models\Estudiante) {
+            $estudiante = $user;
+        } else {
+            // Si es un User, buscar el estudiante asociado por correo
+            $estudiante = \App\Domain\Estudiante\Models\Estudiante::where('correo', $user->email)->first();
+        }
+
+        if (!$estudiante) {
+            return response()->json([
+                'error' => 'Estudiante no encontrado'
+            ], 404);
+        }
 
         // Verificar que el estudiante esté matriculado en el curso
         if (!$estudiante->cursosMatriculados()->where('curso_id', $evaluacion->curso_id)->exists()) {
@@ -206,9 +234,23 @@ class EvaluacionController extends Controller
     /**
      * Obtener historial de evaluaciones del estudiante
      */
-    public function historialEstudiante(): JsonResponse
+    public function historialEstudiante(Request $request): JsonResponse
     {
-        $estudiante = Auth::user();
+        $user = $request->user();
+
+        // Verificar si el usuario autenticado es un estudiante directamente
+        if ($user instanceof \App\Domain\Estudiante\Models\Estudiante) {
+            $estudiante = $user;
+        } else {
+            // Si es un User, buscar el estudiante asociado por correo
+            $estudiante = \App\Domain\Estudiante\Models\Estudiante::where('correo', $user->email)->first();
+        }
+
+        if (!$estudiante) {
+            return response()->json([
+                'error' => 'Estudiante no encontrado'
+            ], 404);
+        }
 
         $resultados = Resultado::where('estudiante_id', $estudiante->id)
             ->with(['evaluacion.curso'])

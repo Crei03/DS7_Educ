@@ -120,8 +120,13 @@ class EstudianteController extends Controller
                 ], 401);
             }
 
-            // Buscar el estudiante asociado al usuario
-            $estudiante = Estudiante::where('correo', $user->email)->first();
+            // Verificar si el usuario autenticado es un estudiante directamente
+            if ($user instanceof Estudiante) {
+                $estudiante = $user;
+            } else {
+                // Si es un User, buscar el estudiante asociado por correo
+                $estudiante = Estudiante::where('correo', $user->email)->first();
+            }
 
             if (!$estudiante) {
                 return response()->json([

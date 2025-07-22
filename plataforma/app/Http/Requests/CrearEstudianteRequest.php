@@ -44,7 +44,7 @@ class CrearEstudianteRequest extends FormRequest
                 'string',
                 'max:20',
                 'unique:estudiantes',
-                'regex:/^\d{1,2}-\d{4,5}-\d{5,6}$/' // Formato cédula panameña
+                'regex:/^(1[0-3]|[1-9])-\d{1,6}-\d{1,7}$/' // Formato cédula panameña con rango
             ],
             'correo' => [
                 'required',

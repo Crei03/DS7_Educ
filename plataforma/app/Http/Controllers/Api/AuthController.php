@@ -66,56 +66,23 @@ class AuthController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users|unique:estudiantes,correo',
+            'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
-            'tipo' => 'sometimes|in:user,estudiante,profesor'
         ]);
 
-        $tipo = $request->tipo ?? 'estudiante'; // Por defecto será estudiante
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
 
-        if ($tipo === 'estudiante') {
-            // Crear estudiante directamente
-            $nombres = explode(' ', trim($request->name));
-            $nombrePrimario = $nombres[0] ?? '';
-            $apellidoPrimario = $nombres[1] ?? '';
-            $nombreSecundario = $nombres[2] ?? null;
-            $apellidoSecundario = $nombres[3] ?? null;
+        $token = $user->createToken('user-token')->plainTextToken;
 
-            $estudiante = Estudiante::create([
-                'nombrePrimario' => $nombrePrimario,
-                'nombreSecundario' => $nombreSecundario,
-                'apellidoPrimario' => $apellidoPrimario,
-                'apellidoSecundario' => $apellidoSecundario,
-                'correo' => $request->email,
-                'contrasena' => Hash::make($request->password),
-                'fechaNacimiento' => now()->subYears(25), // Valor por defecto
-                'genero' => 'No especificado',
-                'telefono' => null,
-            ]);
-
-            $token = $estudiante->createToken('estudiante-token')->plainTextToken;
-
-            return response()->json([
-                'user' => $estudiante,
-                'token' => $token,
-                'tipo' => 'estudiante'
-            ], 201);
-        } else {
-            // Crear usuario regular
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-            ]);
-
-            $token = $user->createToken('user-token')->plainTextToken;
-
-            return response()->json([
-                'user' => $user,
-                'token' => $token,
-                'tipo' => 'user'
-            ], 201);
-        }
+        return response()->json([
+            'user' => $user,
+            'token' => $token,
+            'tipo' => 'user'
+        ], 201);
     }
 
     public function logout(Request $request): JsonResponse

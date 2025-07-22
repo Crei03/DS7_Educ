@@ -42,7 +42,7 @@ class ProfesorController extends Controller
                 'string',
                 'max:20',
                 'unique:profesores,cedula',
-                'regex:/^\d{1,2}-\d{4,5}-\d{5,6}$/'
+                'regex:/^(1[0-3]|[1-9])-\d{1,6}-\d{1,7}$/'
             ],
             'correo' => 'required|email|max:120|unique:profesores,correo',
             'contrasena' => ['required', Password::min(8)->mixedCase()->numbers()],
@@ -85,7 +85,7 @@ class ProfesorController extends Controller
                 'string',
                 'max:20',
                 'unique:profesores,cedula,' . $profesor->id,
-                'regex:/^\d{1,2}-\d{4,5}-\d{5,6}$/'
+                'regex:/^(1[0-3]|[1-9])-\d{1,6}-\d{1,7}$/'
             ],
             'correo' => 'required|email|max:120|unique:profesores,correo,' . $profesor->id,
             'contrasena' => ['nullable', Password::min(8)->mixedCase()->numbers()],
@@ -192,6 +192,23 @@ class ProfesorController extends Controller
             'data' => [
                 'profesor' => $profesor,
                 'cursos' => $resultado
+            ]
+        ]);
+    }
+
+    /**
+     * Obtener todos los módulos de los cursos del profesor
+     */
+    public function modulos(Profesor $profesor): JsonResponse
+    {
+        $modulos = \App\Domain\ContenidoDigital\Models\Modulo::whereHas('curso', function ($query) use ($profesor) {
+            $query->where('profesor_id', $profesor->getKey());
+        })->with(['curso:id,titulo'])->get();
+
+        return response()->json([
+            'data' => [
+                'profesor' => $profesor,
+                'modulos' => $modulos
             ]
         ]);
     }

@@ -127,34 +127,18 @@ class CursoController extends Controller
             // Cargar la relación profesor
             $curso->load('profesor');
 
-            // Buscar el estudiante asociado al usuario
-            $estudiante = \App\Domain\Estudiante\Models\Estudiante::where('correo', $user->email ?? $user->correo)->first();
-
-            // Si no existe estudiante pero el usuario es de tipo estudiante, crearlo
-            if (!$estudiante && (isset($user->tipo) || $user instanceof \App\Domain\Estudiante\Models\Estudiante)) {
-                if ($user instanceof \App\Models\User) {
-                    // Crear estudiante a partir del usuario
-                    $nombres = explode(' ', trim($user->name));
-                    $estudiante = \App\Domain\Estudiante\Models\Estudiante::create([
-                        'nombrePrimario' => $nombres[0] ?? '',
-                        'nombreSecundario' => $nombres[1] ?? null,
-                        'apellidoPrimario' => $nombres[2] ?? '',
-                        'apellidoSecundario' => $nombres[3] ?? null,
-                        'correo' => $user->email,
-                        'contrasena' => $user->password, // Ya está hasheada
-                        'fechaNacimiento' => now()->subYears(25),
-                        'genero' => 'No especificado',
-                        'telefono' => null,
-                    ]);
-                } else {
-                    $estudiante = $user; // El usuario ya es un estudiante
-                }
+            // Verificar si el usuario autenticado es un estudiante directamente
+            if ($user instanceof \App\Domain\Estudiante\Models\Estudiante) {
+                $estudiante = $user;
+            } else {
+                // Si es un User, buscar el estudiante asociado por correo
+                $estudiante = \App\Domain\Estudiante\Models\Estudiante::where('correo', $user->email)->first();
             }
 
             if (!$estudiante) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'No se pudo encontrar o crear el perfil de estudiante'
+                    'message' => 'Estudiante no encontrado'
                 ], 404);
             }
 
